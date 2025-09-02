@@ -1,0 +1,19 @@
+sllidar_node:
+  ros__parameters:
+    # Connection settings
+    channel_type: "serial"
+    serial_port: "/dev/ttyUSB0"
+    serial_baudrate: 460800
+    
+    # Frame settings
+    frame_id: "lidar_link"
+    
+    # Scan processing settings
+    inverted: false
+    angle_compensate: true
+    scan_mode: "Standard"
+    
+    # Additional settings for better performance
+    scan_frequency: 10.0
+    max_distance: 12.0
+    min_distance: 0.05
