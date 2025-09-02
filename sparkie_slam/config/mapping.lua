@@ -29,7 +29,7 @@ options = {
   landmarks_sampling_ratio = 1.,  -- landmarks sampling ratio
 }
 
-MAP_BUILDER.num_background_threads = 4  -- Number of background threads for map building
+MAP_BUILDER.num_background_threads = 6  -- Number of background threads for map building
 MAP_BUILDER.use_trajectory_builder_2d = true  -- whether use 2D SLAM
 TRAJECTORY_BUILDER_2D.submaps.num_range_data = 35  -- Number of range data for submaps in the 2D track builder  
 TRAJECTORY_BUILDER_2D.min_range = 0.05  -- ignore anything smaller than the robot radius, limiting it to the minimum scan range of the lidar

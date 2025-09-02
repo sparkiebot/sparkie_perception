@@ -1,6 +1,7 @@
 import os
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, EqualsSubstitution
+from launch.conditions import IfCondition
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -15,20 +16,44 @@ def generate_launch_description():
     # Configuration file folder path
     configuration_directory = LaunchConfiguration('configuration_directory',default= os.path.join(pkg_share, 'config') )
     # Configuration file
-    configuration_basename = LaunchConfiguration('configuration_basename', default='cartographer_2d.lua')
+    mapping_config = LaunchConfiguration('mapping_config', default='mapping.lua')
+    localization_config = LaunchConfiguration('localization_config', default='localization.lua')
+
+    # Choose between mapping or localization
+    use_mapping = LaunchConfiguration('use_mapping', default='true')
+
+    map_file = LaunchConfiguration('map_file', default=os.path.join(pkg_share, 'maps', 'my_map.pbstream'))
+
 
     #Nodes
-    cartographer_node = Node(
+    # Cartographer node for mapping
+    cartographer_mapping_node = Node(
         package='cartographer_ros',
         executable='cartographer_node',
         name='cartographer_node',
         output='screen',
+        condition=IfCondition(EqualsSubstitution(use_mapping, 'true')),
         arguments=['-configuration_directory', configuration_directory,
-                   '-configuration_basename', configuration_basename],
+                   '-configuration_basename', mapping_config],
         remappings=[
             ('/scan', '/sparkie/scan'),
             ('/odom', '/sparkie/odom/ekf'),
-            ('/imu', '/sparkie/imu'),
+        ],
+    )
+
+    # Cartographer node for localization
+    cartographer_localization_node = Node(
+        package='cartographer_ros',
+        executable='cartographer_node',
+        name='cartographer_node',
+        output='screen',
+        condition=IfCondition(EqualsSubstitution(use_mapping, 'false')),
+        arguments=['-configuration_directory', configuration_directory,
+                   '-configuration_basename', localization_config,
+                   '-load_state_filename', map_file],
+        remappings=[
+            ('/scan', '/sparkie/scan'),
+            ('/odom', '/sparkie/odom/ekf'),
         ],
     )
 
@@ -43,7 +68,8 @@ def generate_launch_description():
 
     #Launch file
     ld = LaunchDescription()
-    ld.add_action(cartographer_node)
+    ld.add_action(cartographer_mapping_node)
+    ld.add_action(cartographer_localization_node)
     ld.add_action(cartographer_occupancy_grid_node)
 
     return ld
