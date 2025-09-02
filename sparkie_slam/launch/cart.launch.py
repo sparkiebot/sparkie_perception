@@ -26,7 +26,9 @@ def generate_launch_description():
         arguments=['-configuration_directory', configuration_directory,
                    '-configuration_basename', configuration_basename],
         remappings=[
-            ('/scan', '/sparkie/scan') # Remappa /scan al topic desiderato
+            ('/scan', '/sparkie/scan'),
+            ('/odom', '/sparkie/odom/ekf'),
+            ('/imu', '/sparkie/imu'),
         ],
     )
 
