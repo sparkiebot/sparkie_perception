@@ -18,6 +18,7 @@
   <exec_depend>sparkie_lidar</exec_depend>
   <exec_depend>sparkie_odom</exec_depend>
   <exec_depend>sparkie_slam</exec_depend>
+  <exec_depend>sparkie_nav</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
